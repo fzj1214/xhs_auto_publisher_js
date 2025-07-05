@@ -1,0 +1,9 @@
+{
+  "title": "手搓AI小红书自动发布神器！",
+  "content": "复旦物理系大一菜鸟一枚，但业余超爱捣鼓小工具！最近肝了半个月，终于做出超实用的AI小红书自动发布系统，忍不住安利给姐妹们～  \r\n\r\n🌟核心功能：  \r\n1️⃣ AI内容生成：输入关键词自动产出文案+配图建议，再也不用憋文案到头秃！  \r\n2️⃣ 一键发布：绑定账号后直接同步到小红书，解放双手超省时～  \r\n3️⃣ 定时发布：能排期一周的笔记，上课时也能保持日更！（亲测流量更稳）  \r\n\r\n💡为什么做这个？  \r\n自己起号时发现手动发笔记太耗时，市面工具又贵又复杂…干脆用Python+DeepSeek API自己搭了一个，界面超简洁，小白也能秒上手！  \r\n\r\n🔥真实体验：  \r\n测试两周涨粉100+！系统自动生成的\"暑期日常\"笔记居然小爆了（震惊.jpg）  \r\n\r\n👉附赠小贴士：定时发布建议设在下午4-6点，亲测流量更好～  \r\n\r\n代码已开源在GitHub（搜auto_rednote），欢迎技术党一起魔改！非技术党可蹲我内测包～ 真的香，求夸！(๑•̀ㅂ•́)و✧",
+  "images": [
+    "D:\\auto_rednote_origin_build\\auto_rednote\\uploads\\2025-06-30T11-13-22_6k0th5ddl.png",
+    "D:\\auto_rednote_origin_build\\auto_rednote\\uploads\\2025-06-30T11-13-22_74y5a0ftt.png",
+    "D:\\auto_rednote_origin_build\\auto_rednote\\uploads\\2025-06-30T11-13-22_dhxt5wfyx.png"
+  ]
+}

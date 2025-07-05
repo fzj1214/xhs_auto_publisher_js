@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小红书自动发布系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #f5f5f5;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .tab.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .status {
+            text-align: center;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .status h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .file-upload {
+            border: 2px dashed #e1e5e9;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+        
+        .file-upload:hover {
+            border-color: #667eea;
+        }
+        
+        .file-upload.dragover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        
+        .ai-style-btn, .ai-persona-btn {
+            background: #f8f9fa;
+            color: #495057;
+            border: 1.5px solid #dee2e6;
+            border-radius: 8px;
+            padding: 12px 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+            white-space: normal;
+            height: auto;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .ai-style-btn.active, .ai-persona-btn.active {
+            background: #667eea;
+            color: #fff;
+            border: 1.5px solid #667eea;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+        
+        .ai-style-btn:hover, .ai-persona-btn:hover {
+            background: #e9ecef;
+            border-color: #adb5bd;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .ai-style-btn.active:hover, .ai-persona-btn.active:hover {
+            background: #5a6fd8;
+            border-color: #5a6fd8;
+        }
+        
+        .ai-options-grid {
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌸 小红书自动发布系统</h1>
+            <p>JavaScript 版本 - 基于 Node.js + Puppeteer</p>
+        </div>
+        
+        <div id="message"></div>
+        
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('publish', this)">发布笔记</div>
+            <div class="tab" onclick="switchTab('batch', this)">批量定时发布</div>
+        </div>
+        
+        <!-- 发布笔记标签页 -->
+        <div id="publish-tab" class="tab-content active">
+            <div class="form-group">
+                <label>小红书手机号</label>
+                <input type="tel" id="xhs-phone" placeholder="请输入小红书登录手机号">
+                <button type="button" class="btn" onclick="xhsLogin()" style="margin-top: 10px;">登录小红书</button>
+            </div>
+            
+            <!-- AI生成内容区域 -->
+            <div class="form-group">
+                <label>AI智能自动发布</label>
+                
+                <div class="form-group">
+                    <label>内容主题:</label>
+                    <input type="text" id="ai-theme" placeholder="复旦大一物理系宝宝放暑假啦~" style="width: 100%; margin-bottom: 10px;">
+                </div>
+                
+                <div class="form-group">
+                    <label>内容风格:</label>
+                    <div class="ai-options-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 15px;">
+                        <button type="button" class="ai-style-btn" data-value="干货分享" onclick="selectAIOption('style', this)">干货分享</button>
+                        <button type="button" class="ai-style-btn" data-value="情感故事" onclick="selectAIOption('style', this)">情感故事</button>
+                        <button type="button" class="ai-style-btn active" data-value="生活记录" onclick="selectAIOption('style', this)">生活记录</button>
+                        <button type="button" class="ai-style-btn" data-value="深度思考" onclick="selectAIOption('style', this)">深度思考</button>
+                        <button type="button" class="ai-style-btn" data-value="幽默风趣" onclick="selectAIOption('style', this)">幽默风趣</button>
+                    </div>
+                    <div class="ai-options-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 10px;">
+                        <button type="button" class="ai-style-btn" data-value="文艺清新" onclick="selectAIOption('style', this)">文艺清新</button>
+                        <button type="button" class="ai-style-btn" data-value="实用指南" onclick="selectAIOption('style', this)">实用指南</button>
+                        <button type="button" class="ai-style-btn" data-value="科普知识" onclick="selectAIOption('style', this)">科普知识</button>
+                        <button type="button" class="ai-style-btn" data-value="种草测评" onclick="selectAIOption('style', this)">种草测评</button>
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="text" id="custom-style" placeholder="自定义风格" style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+                        <button type="button" class="ai-style-btn" onclick="useCustomStyle()">使用自定义</button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>内容人设:</label>
+                    <div class="ai-options-grid" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-bottom: 15px;">
+                        <button type="button" class="ai-persona-btn" data-value="职场人士" onclick="selectAIOption('persona', this)">职场人士</button>
+                        <button type="button" class="ai-persona-btn active" data-value="学生党" onclick="selectAIOption('persona', this)">学生党</button>
+                        <button type="button" class="ai-persona-btn" data-value="妈妈" onclick="selectAIOption('persona', this)">妈妈</button>
+                        <button type="button" class="ai-persona-btn" data-value="新婚主妇" onclick="selectAIOption('persona', this)">新婚主妇</button>
+                        <button type="button" class="ai-persona-btn" data-value="旅行达人" onclick="selectAIOption('persona', this)">旅行达人</button>
+                        <button type="button" class="ai-persona-btn" data-value="美食博主" onclick="selectAIOption('persona', this)">美食博主</button>
+                    </div>
+                    <div class="ai-options-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 10px;">
+                        <button type="button" class="ai-persona-btn" data-value="健身达人" onclick="selectAIOption('persona', this)">健身达人</button>
+                        <button type="button" class="ai-persona-btn" data-value="资深玩家" onclick="selectAIOption('persona', this)">资深玩家</button>
+                        <button type="button" class="ai-persona-btn" data-value="宠物主人" onclick="selectAIOption('persona', this)">宠物主人</button>
+                        <button type="button" class="ai-persona-btn" data-value="手工爱好者" onclick="selectAIOption('persona', this)">手工爱好者</button>
+                        <button type="button" class="ai-persona-btn" data-value="自定义" onclick="selectAIOption('persona', this)">自定义</button>
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="text" id="custom-persona" placeholder="自定义人设" style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+                        <button type="button" class="ai-persona-btn" onclick="useCustomPersona()">使用自定义</button>
+                    </div>
+                </div>
+                
+                <button type="button" class="btn" onclick="generateAIContent()" style="width: 100%; margin-bottom: 15px;">AI一键生成内容</button>
+            </div>
+            
+            <form onsubmit="publishNote(event)">
+                <div class="form-group">
+                    <label>笔记标题</label>
+                    <input type="text" id="note-title" required placeholder="请输入笔记标题">
+                </div>
+                <div class="form-group">
+                    <label>笔记内容</label>
+                    <textarea id="note-content" required placeholder="请输入笔记内容..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>上传图片</label>
+                    <div class="file-upload" onclick="document.getElementById('file-input').click()">
+                        <input type="file" id="file-input" multiple accept="image/*" style="display: none;" onchange="handleFileUpload(event)">
+                        <p>点击或拖拽上传图片</p>
+                        <div id="uploaded-files"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>发布时间</label>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="radio" id="publish-now" name="publish-type" value="now" checked>
+                        <label for="publish-now" style="margin: 0;">立即发布</label>
+                        <input type="radio" id="publish-scheduled" name="publish-type" value="scheduled">
+                        <label for="publish-scheduled" style="margin: 0;">定时发布</label>
+                    </div>
+                    <input type="datetime-local" id="scheduled-time" style="margin-top: 10px; display: none;" placeholder="选择发布时间">
+                </div>
+                
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" class="btn" style="flex: 1;">📝 发布到小红书</button>
+                    <button type="button" class="btn" onclick="viewScheduledPosts()" style="flex: 1; background: #28a745;">📅 查看定时发布</button>
+                </div>
+            </form>
+            
+            <!-- 定时发布列表 -->
+            <div id="scheduled-posts" style="display: none; margin-top: 20px;">
+                <h4>定时发布列表</h4>
+                <div id="scheduled-posts-list"></div>
+            </div>
+        </div>
+        
+        <!-- 批量定时发布标签页 -->
+        <div id="batch-tab" class="tab-content">
+            <div class="form-group">
+                <label>批量发布设置</label>
+                
+                <div class="form-group">
+                    <label>发布数量 (最大10条):</label>
+                    <input type="number" id="batch-count" min="1" max="10" value="3" style="width: 100px;">
+                </div>
+                
+                <div class="form-group">
+                    <label>发布间隔:</label>
+                    <select id="batch-interval" style="width: 200px; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+                        <option value="3">3分钟</option>
+                        <option value="5">5分钟</option>
+                        <option value="10">10分钟</option>
+                        <option value="15">15分钟</option>
+                        <option value="30" selected>30分钟</option>
+                        <option value="60">1小时</option>
+                        <option value="120">2小时</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- AI生成内容区域 -->
+            <div class="form-group">
+                <label>AI智能批量生成</label>
+                
+                <div class="form-group">
+                    <label>内容主题:</label>
+                    <input type="text" id="batch-ai-theme" placeholder="复旦大一物理系宝宝放暑假啦~" style="width: 100%; margin-bottom: 10px;">
+                </div>
+                
+                <div class="form-group">
+                    <label>内容风格:</label>
+                    <div class="ai-options-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 15px;">
+                        <button type="button" class="ai-style-btn" data-value="干货分享" onclick="selectBatchAIOption('style', this)">干货分享</button>
+                        <button type="button" class="ai-style-btn" data-value="情感故事" onclick="selectBatchAIOption('style', this)">情感故事</button>
+                        <button type="button" class="ai-style-btn active" data-value="生活记录" onclick="selectBatchAIOption('style', this)">生活记录</button>
+                        <button type="button" class="ai-style-btn" data-value="深度思考" onclick="selectBatchAIOption('style', this)">深度思考</button>
+                        <button type="button" class="ai-style-btn" data-value="幽默风趣" onclick="selectBatchAIOption('style', this)">幽默风趣</button>
+                    </div>
+                    <div class="ai-options-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 10px;">
+                        <button type="button" class="ai-style-btn" data-value="文艺清新" onclick="selectBatchAIOption('style', this)">文艺清新</button>
+                        <button type="button" class="ai-style-btn" data-value="实用指南" onclick="selectBatchAIOption('style', this)">实用指南</button>
+                        <button type="button" class="ai-style-btn" data-value="科普知识" onclick="selectBatchAIOption('style', this)">科普知识</button>
+                        <button type="button" class="ai-style-btn" data-value="种草测评" onclick="selectBatchAIOption('style', this)">种草测评</button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>内容人设:</label>
+                    <div class="ai-options-grid" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-bottom: 15px;">
+                        <button type="button" class="ai-persona-btn" data-value="职场人士" onclick="selectBatchAIOption('persona', this)">职场人士</button>
+                        <button type="button" class="ai-persona-btn active" data-value="学生党" onclick="selectBatchAIOption('persona', this)">学生党</button>
+                        <button type="button" class="ai-persona-btn" data-value="妈妈" onclick="selectBatchAIOption('persona', this)">妈妈</button>
+                        <button type="button" class="ai-persona-btn" data-value="创业者" onclick="selectBatchAIOption('persona', this)">创业者</button>
+                        <button type="button" class="ai-persona-btn" data-value="旅行者" onclick="selectBatchAIOption('persona', this)">旅行者</button>
+                        <button type="button" class="ai-persona-btn" data-value="美食家" onclick="selectBatchAIOption('persona', this)">美食家</button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>上传参考图片:</label>
+                    <input type="file" id="batch-reference-images" multiple accept="image/*" onchange="handleBatchReferenceUpload(event)">
+                    <div id="batch-reference-files" style="margin-top: 10px;"></div>
+                </div>
+                
+                <div style="display: flex; gap: 10px; margin: 20px 0;">
+                    <button type="button" class="btn" onclick="generateBatchImages()" style="flex: 1; background: #ff6b6b;">🎨 批量配图</button>
+                    <button type="button" class="btn" onclick="generateBatchContent()" style="flex: 1; background: #4ecdc4;">📝 批量生文</button>
+                </div>
+            </div>
+            
+            <!-- 批量任务预览 -->
+            <div id="batch-preview" style="display: none; margin-top: 20px;">
+                <h4>批量任务预览</h4>
+                <div id="batch-tasks-list"></div>
+                <button type="button" class="btn" onclick="startBatchPublish()" style="margin-top: 15px; background: #28a745;">🚀 开始批量定时发布</button>
+            </div>
+            
+            <!-- 定时任务状态 -->
+            <div id="scheduled-tasks-status" style="margin-top: 30px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h4>定时任务状态</h4>
+                    <button type="button" class="btn" onclick="refreshTaskStatus()" style="background: #007bff; padding: 5px 15px; font-size: 12px;">🔄 刷新状态</button>
+                </div>
+                <div id="tasks-status-list" style="background: #f8f9fa; border-radius: 8px; padding: 15px; min-height: 100px;">
+                    <p style="color: #666; text-align: center; margin: 0;">暂无定时任务</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let uploadedImages = [];
+        
+        // 标签页切换
+        function switchTab(tabName, element) {
+            document.querySelectorAll('.tabs > .tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.container > .tab-content').forEach(content => content.classList.remove('active'));
+            
+            if (element) {
+                element.classList.add('active');
+            }
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            if (tabName === 'status') {
+                checkStatus();
+            } else if (tabName === 'batch') {
+                // 切换到批量发布标签页时刷新任务状态
+                refreshTaskStatus();
+            }
+        }
+        
+        // 显示消息
+        function showMessage(message, type = 'success') {
+            const messageDiv = document.getElementById('message');
+            messageDiv.innerHTML = `<div class="message ${type}">${message}</div>`;
+            setTimeout(() => {
+                messageDiv.innerHTML = '';
+            }, 5000);
+        }
+        
+        // 小红书登录
+        async function xhsLogin() {
+            const phone = document.getElementById('xhs-phone').value;
+            if (!phone) {
+                showMessage('请输入手机号', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/xiaohongshu-login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ phone }),
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showMessage('小红书登录成功！浏览器将打开，请完成验证', 'success');
+                } else {
+                    showMessage(data.message, 'error');
+                }
+            } catch (error) {
+                showMessage('小红书登录失败：' + error.message, 'error');
+            }
+        }
+        
+        // 文件上传
+        async function handleFileUpload(event) {
+            const files = event.target.files;
+            
+            for (let file of files) {
+                // 直接添加到上传列表，不立即上传
+                uploadedImages.push(file);
+                updateUploadedFilesList();
+                showMessage(`文件 ${file.name} 已添加`, 'success');
+            }
+        }
+        
+        function updateUploadedFilesList() {
+            const container = document.getElementById('uploaded-files');
+            container.innerHTML = uploadedImages.map((file, index) => 
+                `<div style="margin: 5px 0; color: #666;">✓ ${file.name} <button onclick="removeFile(${index})" style="margin-left: 10px; color: red; border: none; background: none; cursor: pointer;">删除</button></div>`
+            ).join('');
+        }
+        
+        function removeFile(index) {
+            uploadedImages.splice(index, 1);
+            updateUploadedFilesList();
+        }
+        
+        // 发布笔记
+        async function publishNote(event) {
+            event.preventDefault();
+            
+            const title = document.getElementById('note-title').value;
+            const content = document.getElementById('note-content').value;
+            const publishNow = document.getElementById('publish-now').checked;
+            const scheduledTime = document.getElementById('scheduled-time').value;
+            
+            if (!title || !content) {
+                showMessage('请填写标题和内容', 'error');
+                return;
+            }
+            
+            if (uploadedImages.length === 0) {
+                showMessage('请至少上传一张图片', 'error');
+                return;
+            }
+            
+            if (!publishNow && !scheduledTime) {
+                showMessage('请选择发布时间', 'error');
+                return;
+            }
+            
+            try {
+                const formData = new FormData();
+                formData.append('title', title);
+                formData.append('content', content);
+                
+                // 添加所有图片文件
+                uploadedImages.forEach(file => {
+                    formData.append('images', file);
+                });
+                
+                let apiUrl = '/api/publish';
+                
+                // 如果是定时发布，使用不同的API
+                if (!publishNow && scheduledTime) {
+                    apiUrl = '/api/schedule_publish';
+                    formData.append('scheduled_time', scheduledTime);
+                }
+                
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    body: formData,
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    const message = publishNow ? '笔记发布成功！' : '定时发布任务创建成功！';
+                    showMessage(message, 'success');
+                    // 清空表单
+                    document.getElementById('note-title').value = '';
+                    document.getElementById('note-content').value = '';
+                    document.getElementById('scheduled-time').value = '';
+                    uploadedImages = [];
+                    updateUploadedFilesList();
+                } else {
+                    showMessage(data.message || '发布失败', 'error');
+                }
+            } catch (error) {
+                showMessage('发布失败：' + error.message, 'error');
+            }
+        }
+        
+        // 检查系统状态
+        async function checkStatus() {
+            try {
+                // 检查主服务器
+                const mainResponse = await fetch('/health');
+                const mainData = await mainResponse.json();
+                
+                document.getElementById('main-server-status').textContent = 
+                    mainData.status === 'ok' ? '✅ 正常' : '❌ 异常';
+                document.getElementById('user-count').textContent = mainData.users || 0;
+                document.getElementById('post-count').textContent = mainData.posts || 0;
+                
+                // 检查 MCP 服务器
+                try {
+                    const mcpResponse = await fetch('http://localhost:3001/health');
+                    const mcpData = await mcpResponse.json();
+                    document.getElementById('mcp-server-status').textContent = 
+                        mcpData.status === 'ok' ? '✅ 正常' : '❌ 异常';
+                } catch (error) {
+                    document.getElementById('mcp-server-status').textContent = '❌ 无法连接';
+                }
+                
+            } catch (error) {
+                document.getElementById('main-server-status').textContent = '❌ 无法连接';
+                document.getElementById('mcp-server-status').textContent = '❌ 无法连接';
+            }
+        }
+        
+        // 全局变量存储选中的AI选项
+        let selectedAIStyle = '生活记录';
+        let selectedAIPersona = '学生党';
+        
+        // 选择AI选项
+        function selectAIOption(type, element) {
+            const value = element.getAttribute('data-value');
+            
+            if (type === 'style') {
+                // 移除其他风格按钮的active类
+                document.querySelectorAll('.ai-style-btn').forEach(btn => btn.classList.remove('active'));
+                element.classList.add('active');
+                selectedAIStyle = value;
+            } else if (type === 'persona') {
+                // 移除其他人设按钮的active类
+                document.querySelectorAll('.ai-persona-btn').forEach(btn => btn.classList.remove('active'));
+                element.classList.add('active');
+                selectedAIPersona = value;
+            }
+        }
+        
+        // 使用自定义风格
+        function useCustomStyle() {
+            const customStyle = document.getElementById('custom-style').value.trim();
+            if (!customStyle) {
+                showMessage('请输入自定义风格', 'error');
+                return;
+            }
+            
+            // 移除所有风格按钮的active类
+            document.querySelectorAll('.ai-style-btn').forEach(btn => btn.classList.remove('active'));
+            selectedAIStyle = customStyle;
+            
+            // 显示选中的自定义风格
+            showMessage(`已选择自定义风格: ${customStyle}`, 'success');
+        }
+        
+        // 使用自定义人设
+        function useCustomPersona() {
+            const customPersona = document.getElementById('custom-persona').value.trim();
+            if (!customPersona) {
+                showMessage('请输入自定义人设', 'error');
+                return;
+            }
+            
+            // 移除所有人设按钮的active类
+            document.querySelectorAll('.ai-persona-btn').forEach(btn => btn.classList.remove('active'));
+            selectedAIPersona = customPersona;
+            
+            // 显示选中的自定义人设
+            showMessage(`已选择自定义人设: ${customPersona}`, 'success');
+        }
+        
+        // AI生成内容
+        async function generateAIContent() {
+            const theme = document.getElementById('ai-theme').value.trim();
+            
+            if (!theme) {
+                showMessage('请填写内容主题', 'error');
+                return;
+            }
+            
+            if (!selectedAIStyle || !selectedAIPersona) {
+                showMessage('请选择内容风格和人设', 'error');
+                return;
+            }
+            
+            // 获取按钮元素
+            const generateBtn = event.target;
+            const originalText = generateBtn.textContent;
+            
+            // 设置加载状态
+            generateBtn.disabled = true;
+            generateBtn.textContent = '🤖 AI正在生成中...';
+            generateBtn.style.opacity = '0.6';
+            
+            // 显示加载提示
+            showMessage('AI正在为您生成内容，请稍候...', 'info');
+            
+            try {
+                const response = await fetch('/api/ai_generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        theme: theme, 
+                        style: selectedAIStyle, 
+                        persona: selectedAIPersona 
+                    }),
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    document.getElementById('note-title').value = data.data.title;
+                    document.getElementById('note-content').value = data.data.content;
+                    showMessage('AI内容生成成功！', 'success');
+                } else {
+                    showMessage(data.message, 'error');
+                }
+            } catch (error) {
+                showMessage('AI生成失败：' + error.message, 'error');
+            } finally {
+                // 恢复按钮状态
+                generateBtn.disabled = false;
+                generateBtn.textContent = originalText;
+                generateBtn.style.opacity = '1';
+            }
+        }
+        
+        // 定时发布切换
+        document.addEventListener('DOMContentLoaded', function() {
+            const publishNow = document.getElementById('publish-now');
+            const publishScheduled = document.getElementById('publish-scheduled');
+            const scheduledTime = document.getElementById('scheduled-time');
+            
+            if (publishNow && publishScheduled && scheduledTime) {
+                publishNow.addEventListener('change', function() {
+                    if (this.checked) {
+                        scheduledTime.style.display = 'none';
+                    }
+                });
+                
+                publishScheduled.addEventListener('change', function() {
+                    if (this.checked) {
+                        scheduledTime.style.display = 'block';
+                    }
+                });
+            }
+        });
+        
+        // 查看定时发布列表
+        async function viewScheduledPosts() {
+            const scheduledPostsDiv = document.getElementById('scheduled-posts');
+            const listDiv = document.getElementById('scheduled-posts-list');
+            
+            try {
+                const response = await fetch('/api/scheduled_posts', {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    listDiv.innerHTML = '';
+                    
+                    if (data.data.length === 0) {
+                        listDiv.innerHTML = '<p>暂无定时发布任务</p>';
+                    } else {
+                        data.data.forEach(post => {
+                            const postDiv = document.createElement('div');
+                            postDiv.style.cssText = 'border: 1px solid #ddd; padding: 10px; margin: 10px 0; border-radius: 5px;';
+                            postDiv.innerHTML = `
+                                <h5>${post.title}</h5>
+                                <p>发布时间: ${post.scheduled_time}</p>
+                                <p>状态: ${post.status}</p>
+                                <button onclick="cancelScheduledPost(${post.id})" class="btn" style="background: #dc3545; color: white; padding: 5px 10px;">取消</button>
+                            `;
+                            listDiv.appendChild(postDiv);
+                        });
+                    }
+                    
+                    scheduledPostsDiv.style.display = scheduledPostsDiv.style.display === 'none' ? 'block' : 'none';
+                } else {
+                    showMessage(data.message, 'error');
+                }
+            } catch (error) {
+                showMessage('获取定时发布列表失败：' + error.message, 'error');
+            }
+        }
+        
+        // 取消定时发布
+        async function cancelScheduledPost(postId) {
+            try {
+                const response = await fetch(`/api/cancel_scheduled_post/${postId}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    showMessage('定时发布已取消', 'success');
+                    viewScheduledPosts(); // 刷新列表
+                } else {
+                    showMessage(data.message, 'error');
+                }
+            } catch (error) {
+                showMessage('取消定时发布失败：' + error.message, 'error');
+            }
+        }
+        
+        // 批量发布相关变量
+        let batchReferenceImages = [];
+        let batchGeneratedImages = [];
+        let batchGeneratedContent = [];
+        let selectedBatchAIStyle = '生活记录';
+        let selectedBatchAIPersona = '学生党';
+        
+        // 批量AI选项选择
+        function selectBatchAIOption(type, element) {
+            const container = element.parentElement;
+            container.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+            element.classList.add('active');
+            
+            if (type === 'style') {
+                selectedBatchAIStyle = element.getAttribute('data-value');
+            } else if (type === 'persona') {
+                selectedBatchAIPersona = element.getAttribute('data-value');
+            }
+        }
+        
+        // 处理批量参考图片上传
+        function handleBatchReferenceUpload(event) {
+            const files = Array.from(event.target.files);
+            batchReferenceImages = files;
+            
+            const container = document.getElementById('batch-reference-files');
+            container.innerHTML = files.map((file, index) => 
+                `<div style="margin: 5px 0; color: #666;">✓ ${file.name} <button onclick="removeBatchReferenceFile(${index})" style="margin-left: 10px; color: red; border: none; background: none; cursor: pointer;">删除</button></div>`
+            ).join('');
+        }
+        
+        function removeBatchReferenceFile(index) {
+            batchReferenceImages.splice(index, 1);
+            const container = document.getElementById('batch-reference-files');
+            container.innerHTML = batchReferenceImages.map((file, index) => 
+                `<div style="margin: 5px 0; color: #666;">✓ ${file.name} <button onclick="removeBatchReferenceFile(${index})" style="margin-left: 10px; color: red; border: none; background: none; cursor: pointer;">删除</button></div>`
+            ).join('');
+        }
+        
+        // 批量生成图片
+        async function generateBatchImages() {
+            const theme = document.getElementById('batch-ai-theme').value;
+            const count = parseInt(document.getElementById('batch-count').value);
+            
+            if (!theme) {
+                showMessage('请输入内容主题', 'error');
+                return;
+            }
+            
+            const generateBtn = event.target;
+            const originalText = generateBtn.textContent;
+            generateBtn.disabled = true;
+            generateBtn.textContent = '生成中...';
+            generateBtn.style.opacity = '0.6';
+            
+            try {
+                const response = await fetch('/api/batch_generate_images', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        theme: theme,
+                        style: selectedBatchAIStyle,
+                        persona: selectedBatchAIPersona,
+                        count: count
+                    }),
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    batchGeneratedImages = data.data.images;
+                    showMessage(`成功生成${batchGeneratedImages.length}张图片！`, 'success');
+                    updateBatchPreview();
+                } else {
+                    showMessage(data.message, 'error');
+                }
+            } catch (error) {
+                showMessage('批量生成图片失败：' + error.message, 'error');
+            } finally {
+                generateBtn.disabled = false;
+                generateBtn.textContent = originalText;
+                generateBtn.style.opacity = '1';
+            }
+        }
+        
+        // 批量生成内容
+        async function generateBatchContent() {
+            const theme = document.getElementById('batch-ai-theme').value;
+            const count = parseInt(document.getElementById('batch-count').value);
+            
+            if (!theme) {
+                showMessage('请输入内容主题', 'error');
+                return;
+            }
+            
+            const generateBtn = event.target;
+            const originalText = generateBtn.textContent;
+            generateBtn.disabled = true;
+            generateBtn.textContent = '生成中...';
+            generateBtn.style.opacity = '0.6';
+            
+            try {
+                const response = await fetch('/api/batch_generate_content', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        theme: theme,
+                        style: selectedBatchAIStyle,
+                        persona: selectedBatchAIPersona,
+                        count: count
+                    }),
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    batchGeneratedContent = data.data.contents;
+                    showMessage(`成功生成${batchGeneratedContent.length}条内容！`, 'success');
+                    updateBatchPreview();
+                } else {
+                    showMessage(data.message, 'error');
+                }
+            } catch (error) {
+                showMessage('批量生成内容失败：' + error.message, 'error');
+            } finally {
+                generateBtn.disabled = false;
+                generateBtn.textContent = originalText;
+                generateBtn.style.opacity = '1';
+            }
+        }
+        
+        // 更新批量任务预览
+        function updateBatchPreview() {
+            const previewDiv = document.getElementById('batch-preview');
+            const listDiv = document.getElementById('batch-tasks-list');
+            const count = parseInt(document.getElementById('batch-count').value);
+            
+            if (batchGeneratedImages.length > 0 || batchGeneratedContent.length > 0) {
+                previewDiv.style.display = 'block';
+                
+                let html = '';
+                for (let i = 0; i < count; i++) {
+                    const content = batchGeneratedContent[i] || { title: '待生成', content: '待生成' };
+                    const image = batchGeneratedImages[i] || '待生成';
+                    
+                    html += `
+                        <div style="border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 8px; background: #f9f9f9;">
+                            <h5>任务 ${i + 1}</h5>
+                            <p><strong>标题:</strong> ${content.title}</p>
+                            <p><strong>内容:</strong> ${content.content.substring(0, 100)}${content.content.length > 100 ? '...' : ''}</p>
+                            <p><strong>图片:</strong> ${typeof image === 'string' ? image : '已生成'}</p>
+                        </div>
+                    `;
+                }
+                
+                listDiv.innerHTML = html;
+            }
+        }
+        
+        // 开始批量定时发布
+        async function startBatchPublish() {
+            const count = parseInt(document.getElementById('batch-count').value);
+            const interval = parseInt(document.getElementById('batch-interval').value);
+            
+            if (batchGeneratedImages.length === 0 || batchGeneratedContent.length === 0) {
+                showMessage('请先生成图片和内容', 'error');
+                return;
+            }
+            
+            if (batchGeneratedImages.length < count || batchGeneratedContent.length < count) {
+                showMessage('生成的图片或内容数量不足', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/batch_schedule_publish', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        count: count,
+                        interval: interval,
+                        images: batchGeneratedImages,
+                        contents: batchGeneratedContent
+                    }),
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    showMessage(`成功创建${count}个定时发布任务！`, 'success');
+                    // 清空数据
+                    batchGeneratedImages = [];
+                    batchGeneratedContent = [];
+                    document.getElementById('batch-preview').style.display = 'none';
+                    // 立即刷新任务状态
+                    refreshTaskStatus();
+                    // 开始自动刷新
+                    startAutoRefresh();
+                } else {
+                    showMessage(data.message, 'error');
+                }
+            } catch (error) {
+                showMessage('创建批量定时发布失败：' + error.message, 'error');
+            }
+        }
+        
+        // 任务状态管理
+        let autoRefreshInterval = null;
+        
+        // 获取任务状态
+        async function refreshTaskStatus() {
+            try {
+                const response = await fetch('/api/scheduled_tasks', {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    displayTaskStatus(data.data.tasks);
+                } else {
+                    console.error('获取任务状态失败:', data.message);
+                }
+            } catch (error) {
+                console.error('获取任务状态异常:', error);
+            }
+        }
+        
+        // 格式化时间显示
+        function formatDateTime(dateString) {
+            if (!dateString) return '未设置';
+            
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffMs = date.getTime() - now.getTime();
+            const diffMinutes = Math.floor(diffMs / (1000 * 60));
+            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+            
+            // 格式化为易读的时间
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            
+            const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}`;
+            
+            // 添加相对时间提示
+            if (diffMs > 0) {
+                if (diffDays > 0) {
+                    return `${formattedDate} (${diffDays}天后)`;
+                } else if (diffHours > 0) {
+                    return `${formattedDate} (${diffHours}小时后)`;
+                } else if (diffMinutes > 0) {
+                    return `${formattedDate} (${diffMinutes}分钟后)`;
+                } else {
+                    return `${formattedDate} (即将发布)`;
+                }
+            } else {
+                return `${formattedDate} (已过期)`;
+            }
+        }
+        
+        // 显示任务状态
+        function displayTaskStatus(tasks) {
+            const statusList = document.getElementById('tasks-status-list');
+            
+            if (!tasks || tasks.length === 0) {
+                statusList.innerHTML = '<p style="color: #666; text-align: center; margin: 0;">暂无定时任务</p>';
+                return;
+            }
+            
+            let html = '';
+            tasks.forEach(task => {
+                const publishTime = formatDateTime(task.publishTime);
+                const createdTime = task.createdAt ? new Date(task.createdAt).toLocaleString('zh-CN', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                }) : '未知';
+                const publishedTime = task.publishedAt ? new Date(task.publishedAt).toLocaleString('zh-CN', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                }) : '-';
+                
+                let statusColor = '#6c757d';
+                let statusText = '未知';
+                let statusIcon = '❓';
+                
+                switch(task.status) {
+                    case 'scheduled':
+                        statusColor = '#007bff';
+                        statusText = '等待发布';
+                        statusIcon = '⏰';
+                        break;
+                    case 'publishing':
+                        statusColor = '#ffc107';
+                        statusText = '发布中';
+                        statusIcon = '🚀';
+                        break;
+                    case 'published':
+                        statusColor = '#28a745';
+                        statusText = '发布成功';
+                        statusIcon = '✅';
+                        break;
+                    case 'failed':
+                        statusColor = '#dc3545';
+                        statusText = '发布失败';
+                        statusIcon = '❌';
+                        break;
+                }
+                
+                html += `
+                    <div style="border: 1px solid #dee2e6; border-radius: 6px; padding: 12px; margin-bottom: 10px; background: white;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <h5 style="margin: 0; color: #333; font-size: 14px;">${statusIcon} ${task.title}</h5>
+                            <span style="background: ${statusColor}; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px;">${statusText}</span>
+                        </div>
+                        <div style="font-size: 12px; color: #666; line-height: 1.4;">
+                            <div><strong>任务ID:</strong> ${task.id}</div>
+                            <div><strong>计划发布:</strong> ${publishTime}</div>
+                            <div><strong>创建时间:</strong> ${createdTime}</div>
+                            ${task.publishedAt ? `<div><strong>实际发布:</strong> ${publishedTime}</div>` : ''}
+                            ${task.error_message ? `<div style="color: #dc3545;"><strong>错误信息:</strong> ${task.error_message}</div>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            statusList.innerHTML = html;
+        }
+        
+        // 开始自动刷新
+        function startAutoRefresh() {
+            // 清除之前的定时器
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+            }
+            
+            // 每30秒刷新一次
+            autoRefreshInterval = setInterval(refreshTaskStatus, 30000);
+        }
+        
+        // 停止自动刷新
+        function stopAutoRefresh() {
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+                autoRefreshInterval = null;
+            }
+        }
+        
+        // 页面加载时检查状态
+        window.onload = function() {
+            // 初始化任务状态显示
+            refreshTaskStatus();
+            
+            // 添加刷新按钮事件监听器
+            const refreshBtn = document.getElementById('refresh-tasks-btn');
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', refreshTaskStatus);
+            }
+            
+            // 添加发布时间选择的事件监听器
+            const publishNowRadio = document.getElementById('publish-now');
+            const publishScheduledRadio = document.getElementById('publish-scheduled');
+            const scheduledTimeInput = document.getElementById('scheduled-time');
+            
+            publishNowRadio.addEventListener('change', function() {
+                if (this.checked) {
+                    scheduledTimeInput.style.display = 'none';
+                }
+            });
+            
+            publishScheduledRadio.addEventListener('change', function() {
+                if (this.checked) {
+                    scheduledTimeInput.style.display = 'block';
+                }
+            });
+        };
+        
+        // 拖拽上传
+        const fileUpload = document.querySelector('.file-upload');
+        
+        fileUpload.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileUpload.classList.add('dragover');
+        });
+        
+        fileUpload.addEventListener('dragleave', () => {
+            fileUpload.classList.remove('dragover');
+        });
+        
+        fileUpload.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileUpload.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            document.getElementById('file-input').files = files;
+            handleFileUpload({ target: { files } });
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </script>
+</body>
+</html>
