@@ -614,9 +614,18 @@ const BROWSER_CONFIG = {
 
 ## 📄 许可证
 
-<img src="https://img.shields.io/badge/📄_开源许可-MIT-4CAF50?style=for-the-badge&logo=mit&logoColor=white" alt="MIT License"/>
+<img src="https://img.shields.io/badge/📄_开源许可-AFPL-4CAF50?style=for-the-badge&logo=mit&logoColor=white" alt="AFPL License"/>
 
-本项目采用 [MIT](./LICENSE) 许可证
+本项目采用 **Aladdin Free Public License (AFPL)** 许可证。
+
+- ✅ 允许个人和商业使用
+- ✅ 允许修改和分发
+- ✅ 必须保留版权声明
+- ✅ 修改版本必须明确标识
+- ⚠️ 分发时必须包含完整源码
+- ⚠️ 不得对软件本身收费
+
+详细许可证条款请查看 [LICENSE](./LICENSE) 文件。
 
 </div>
 

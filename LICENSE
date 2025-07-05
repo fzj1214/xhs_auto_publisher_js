@@ -1,0 +1,167 @@
+Aladdin Free Public License
+(Version 9, September 18, 2000)
+
+Copyright (C) 2024 xhs_auto_publisher_js
+
+This software is provided 'as-is', without any express or implied warranty.
+In no event will the authors be held liable for any damages arising from the
+use of this software.
+
+Permission is granted to anyone to use this software for any purpose,
+including commercial applications, and to alter it and redistribute it
+freely, subject to the following restrictions:
+
+1. The origin of this software must not be misrepresented; you must not
+   claim that you wrote the original software. If you use this software
+   in a product, an acknowledgment in the product documentation would be
+   appreciated but is not required.
+
+2. Altered source versions must be plainly marked as such, and must not be
+   misrepresented as being the original software.
+
+3. This notice may not be removed or altered from any source distribution.
+
+4. Products derived from this software may not be called "Aladdin", nor may
+   "Aladdin" appear in their name, without prior written permission from
+   Aladdin Enterprises.
+
+5. Redistributions of any form whatsoever must retain the following
+   acknowledgment:
+   "This product includes software developed by Aladdin Enterprises
+   (http://www.aladdin.com/)."
+
+Aladdin Free Public License
+(Version 9, September 18, 2000)
+
+Copyright (C) 1994, 1995, 1997, 1998, 1999, 2000 Aladdin Enterprises,
+Menlo Park, California, U.S.A. All rights reserved.
+
+NOTE: This License is not the same as any of the GNU Licenses published by
+the Free Software Foundation. Its terms are substantially different from
+those of the GNU Licenses. If you are familiar with the GNU Licenses, please
+read this license with extra care.
+
+Aladdin Enterprises hereby grants to anyone the permission to apply this
+License to their own work, as long as the entire License (including the
+above notices and this paragraph) is copied with no changes, additions, or
+deletions except for changing the first paragraph of Section 0 to refer to
+the work with which this License is being distributed and of which it is to
+be a part.
+
+The Intent of this License is to ensure that:
+
+- If you redistribute this software, you must distribute the entire package
+  including sources.
+- You may not charge a fee for this software itself. However, you may charge
+  a distribution fee.
+- If you modify this software, you may distribute your modifications under
+  the terms of this License.
+
+0. Subject Matter
+
+This License applies to the computer program known as "xhs_auto_publisher_js".
+The "Program", below, refers to such program. The Program is a copyrighted
+work whose copyright is held by the copyright holder specified in the Program
+or in this License.
+
+A "work based on the Program" means either the Program or any derivative work
+of the Program, as defined in the United States Copyright Act of 1976, such
+as a translation or a modification.
+
+"Source Code" means the preferred form of a work for making modifications to
+it.
+
+1. Licenses.
+
+Aladdin Enterprises hereby grants you the following rights, provided that you
+comply with all of the restrictions set forth in this License and provided
+that you distribute a Standard Version of the Program including all the
+copyright notices and associated disclaimers.
+
+(a) You may make and distribute verbatim copies of the Program's Source Code
+as you receive it, in any medium, provided that you conspicuously and
+appropriately publish on each copy an appropriate copyright notice and
+disclaimer of warranty; keep intact all the notices that refer to this
+License and to the absence of any warranty; and give any other recipients of
+the Program a copy of this License along with the Program.
+
+(b) You may modify your copy or copies of the Program or any portion of it,
+thus forming a work based on the Program, and copy and distribute such
+modifications or work under the terms of Section 1 above, provided that you
+also meet all of these conditions:
+
+    (i) You must cause the modified files to carry prominent notices stating
+    that you changed the files and the date of any change.
+
+    (ii) You must cause any work that you distribute or publish, that in
+    whole or in part contains or is derived from the Program or any part
+    thereof, to be licensed as a whole at no charge to all third parties
+    under the terms of this License.
+
+2. Restrictions.
+
+You may not charge a fee for the Program itself. You may charge a fee for
+the physical act of transferring a copy, and you may at your option offer
+warranty protection in exchange for a fee.
+
+You may not copy, modify, sublicense, or distribute the Program except as
+expressly provided under this License. Any attempt otherwise to copy, modify,
+sublicense or distribute the Program is void, and will automatically
+terminate your rights under this License.
+
+3. Copying Restrictions.
+
+You may not copy or distribute the Program except as expressly permitted in
+this License. Any attempt otherwise to copy or distribute the Program is
+void and will automatically terminate your rights to use the Program under
+this License.
+
+4. Acceptance.
+
+You are not required to accept this License, since you have not signed it.
+However, nothing else grants you permission to modify or distribute the
+Program or its derivative works. These actions are prohibited by law if you
+do not accept this License. Therefore, by modifying or distributing the
+Program (or any work based on the Program), you indicate your acceptance of
+this License to do so, and all its terms and conditions for copying,
+distributing or modifying the Program or works based on it.
+
+5. Automatic Licensing of Downstream Recipients.
+
+Each time you redistribute the Program, the recipient automatically receives
+a license from the original licensor to copy, distribute or modify the
+Program subject to these terms and conditions. You may not impose any further
+restrictions on the recipients' exercise of the rights granted herein.
+
+6. Contradiction Between Terms.
+
+If, as a consequence of a court judgment or allegation of patent infringement
+or for any other reason (not limited to patent issues), conditions are
+imposed on you (whether by court order, agreement or otherwise) that
+contradict the conditions of this License, they do not excuse you from the
+conditions of this License.
+
+7. NO WARRANTY.
+
+THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE
+LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR
+OTHER PARTIES PROVIDE THE PROGRAM "AS IS" WITHOUT WARRANTY OF ANY KIND,
+EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE
+ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU.
+SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY
+SERVICING, REPAIR OR CORRECTION.
+
+8. Limitation of Liability.
+
+IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING WILL
+ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR REDISTRIBUTE
+THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY
+GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE
+OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA
+OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD
+PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS),
+EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGES.
+
+END OF TERMS AND CONDITIONS
